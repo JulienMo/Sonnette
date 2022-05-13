@@ -7,13 +7,13 @@ namespace Sonnette.Chat.Controller
 {
     [Route("[controller]")]
     [ApiController]
-    public class SonnetteController : ControllerBase
+    public class NotificationsController : ControllerBase
     {
         //Interface hubContext
         private readonly IHubContext<ChatHub> _hubContext;
 
 
-        public SonnetteController(IHubContext<ChatHub> hubContext)
+        public NotificationsController(IHubContext<ChatHub> hubContext)
         {
             _hubContext = hubContext;
         }
