@@ -12,9 +12,10 @@ namespace Sonnette.Chat.Hubs
             await Clients.All.SendAsync("ReceiveMessage", name, message);
         }*/
 
-        public async Task SendMessage(Notification notif)
+        public async Task SendMessage(string user, string message)
         {
-            await Clients.All.SendAsync("ReceiveMessage", "toté", "fdsdsf59");
+            Console.WriteLine("On passe dans le ChatHub");
+            await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
     }
 }

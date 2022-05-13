@@ -44,7 +44,8 @@ namespace Sonnette.Chat.Controller
         //Lire uniquement dans le body (Pas head, ni footer)
         public async Task<ActionResult> NotifSonnette([FromBody] Notification notif)
         {
-            Console.WriteLine(notif.idNotif + " - - "+ notif.typeNotif + " - - " + notif.dateNotif);
+            Console.WriteLine("On passe dans le POST");
+
             await _hubContext.Clients.All.SendAsync("ReceiveMessage", notif);
 
             return NoContent();
