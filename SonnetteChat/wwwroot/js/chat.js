@@ -7,15 +7,18 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
 connection.on("ReceiveMessage", function (notif) {
     let silence = document.getElementById("silence");
+    let son = document.getElementById("son");
+
     if (!silence.checked) {
+        if (son.checked) {
+            var audio = new Audio('Velo1.mp3');
+            audio.play();
+        }
         var li = document.createElement("li");
         document.getElementById("messagesList").appendChild(li);
         // We can assign user-supplied strings to an element's textContent because it
         // is not interpreted as markup. If you're assigning in any other way, you 
         // should be aware of possible script injection concerns.
-
-        /* let audio = document.getElementById('audio')
-         audio.play();*/
 
         li.textContent = `Numéro : ${notif.idNotif} | Date : ${notif.dateNotif} | Type : ${notif.typeNotif}`;
     }
