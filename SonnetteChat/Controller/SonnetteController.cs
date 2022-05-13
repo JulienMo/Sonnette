@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Sonnette.Chat.Hubs;
 using Sonnette.Chat.Models;
@@ -8,20 +7,18 @@ namespace Sonnette.Chat.Controller
 {
     [Route("[controller]")]
     [ApiController]
-    public class ApiController : ControllerBase
+    public class SonnetteController : ControllerBase
     {
         //Interface hubContext
         private readonly IHubContext<ChatHub> _hubContext;
 
 
-        public ApiController(IHubContext<ChatHub> hubContext)
+        public SonnetteController(IHubContext<ChatHub> hubContext)
         {
             _hubContext = hubContext;
         }
 
-        /// ///////////////////////////////////////////////
-
-/*        [HttpGet(Name = "GetTest")]
+/*      [HttpGet(Name = "GetTest")]
         public Notification[] Get()
         {
             return new Notification[]

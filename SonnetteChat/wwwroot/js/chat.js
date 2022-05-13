@@ -6,12 +6,20 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 document.getElementById("sendButton").disabled = true;
 
 connection.on("ReceiveMessage", function (notif) {
-    var li = document.createElement("li");
-    document.getElementById("messagesList").appendChild(li);
-    // We can assign user-supplied strings to an element's textContent because it
-    // is not interpreted as markup. If you're assigning in any other way, you 
-    // should be aware of possible script injection concerns.
-    li.textContent = `Numéro : ${notif.idNotif} | Date : ${notif.dateNotif} | Type : ${notif.typeNotif}`;
+    let silence = document.getElementById("silence");
+    if (!silence.checked) {
+        var li = document.createElement("li");
+        document.getElementById("messagesList").appendChild(li);
+        // We can assign user-supplied strings to an element's textContent because it
+        // is not interpreted as markup. If you're assigning in any other way, you 
+        // should be aware of possible script injection concerns.
+
+        /* let audio = document.getElementById('audio')
+         audio.play();*/
+
+        li.textContent = `Numéro : ${notif.idNotif} | Date : ${notif.dateNotif} | Type : ${notif.typeNotif}`;
+    }
+
 });
 
 connection.start().then(function () {
