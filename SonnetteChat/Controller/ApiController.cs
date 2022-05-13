@@ -10,6 +10,7 @@ namespace Sonnette.Chat.Controller
     [ApiController]
     public class ApiController : ControllerBase
     {
+        //Interface hubContext
         private readonly IHubContext<ChatHub> _hubContext;
 
 
@@ -20,7 +21,7 @@ namespace Sonnette.Chat.Controller
 
         /// ///////////////////////////////////////////////
 
-        [HttpGet(Name = "GetTest")]
+/*        [HttpGet(Name = "GetTest")]
         public Notification[] Get()
         {
             return new Notification[]
@@ -38,7 +39,7 @@ namespace Sonnette.Chat.Controller
                     typeNotif = 4
                 }
             };
-        }
+        }*/
 
         [HttpPost]
         //Lire uniquement dans le body (Pas head, ni footer)

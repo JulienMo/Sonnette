@@ -1,28 +1,35 @@
 ﻿using System.Device.Gpio;
-using System;
-using System.Net;
-using System.IO;
-using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using Sonnette.Raspi.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Sonnette.RaspPi;
+
+namespace Sonnette.Raspi;
 
 public class Sonnette
 {
     private static readonly HttpClient client = new HttpClient();
     private static PinValue previousState = PinValue.High;
+    private static Settings mySettings = new Settings();
+
 
     public static void Main(string[] args)
     {
+        //Charger appsettings dans config
+        var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true).Build();
+
+        //Mettre les valeurs de AppSettings dans mySettings
+        config.GetSection("AppSettings").Bind(mySettings);
+
         Console.WriteLine("Hello");
 
         GpioController controller = new GpioController(PinNumberingScheme.Board);
 
         //Déclaration des PIN
-        controller.OpenPin(10, PinMode.Output);
-        controller.OpenPin(11, PinMode.Input);
+        controller.OpenPin(mySettings.outputPin, PinMode.Output);
+        controller.OpenPin(mySettings.inputPin, PinMode.Input);
 
 
         while (true)
@@ -34,10 +41,10 @@ public class Sonnette
 
     public static void SwitchLed(GpioController controller)
     {
-        if (previousState != controller.Read(11)) {
-            previousState = controller.Read(11);
+        if (previousState != controller.Read(mySettings.inputPin)) {
+            previousState = controller.Read(mySettings.inputPin);
             //Si bouton 
-            if (controller.Read(11) == PinValue.Low)
+            if (controller.Read(mySettings.inputPin) == PinValue.Low)
             {
                 SendMessage(controller);
             }
@@ -51,7 +58,7 @@ public class Sonnette
 
         Notification notif = new Notification
         {
-            idNotif = 1,
+            idNotif = mySettings.id,
             dateNotif = DateTime.Now,
             typeNotif = 4
         };
@@ -59,7 +66,7 @@ public class Sonnette
         var json = JsonSerializer.Serialize(notif);
         var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var url = "http://192.168.43.36:5001/Api";
+        var url = mySettings.url;
 
         try
         {
@@ -89,9 +96,9 @@ public class Sonnette
             Console.WriteLine(ex.Message);
             for (int i = 0; i < 5; i++)
             {
-                controller.Write(10, PinValue.High);
+                controller.Write(mySettings.outputPin, PinValue.High);
                 Thread.Sleep(200);
-                controller.Write(10, PinValue.Low);
+                controller.Write(mySettings.outputPin, PinValue.Low);
                 Thread.Sleep(200);
             }
         }
