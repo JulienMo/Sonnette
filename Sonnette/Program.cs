@@ -72,48 +72,88 @@ public class Sonnette
         DateTime dt = notif.dateNotif;
         int heureNotif = Convert.ToInt32(dt.ToString("HH"));
 
-        if ((heureNotif < mySettings.debutNPD) || (heureNotif > mySettings.finNPD))
+        if (mySettings.debutNPD < mySettings.finNPD)
         {
-            Console.WriteLine(dt.ToString("HH"));
-            Console.WriteLine(heureNotif);
-            Console.WriteLine(mySettings.debutNPD);
-            try
+            if ((heureNotif < mySettings.debutNPD) || (heureNotif > mySettings.finNPD))
             {
-                var response = await client.PostAsync(url, data);
-                string result = response.Content.ReadAsStringAsync().Result;
+                try
+                {
+                    var response = await client.PostAsync(url, data);
+                    string result = response.Content.ReadAsStringAsync().Result;
 
-                if (response.IsSuccessStatusCode)
+                    if (response.IsSuccessStatusCode)
+                    {
+                        //Allumer la led quand bouton Low
+                        controller.Write(10, PinValue.High);
+                        Thread.Sleep(1000);
+                        controller.Write(10, PinValue.Low);
+                    }
+                    else
+                    {
+                        for (int i = 0; i < 5; i++)
+                        {
+                            controller.Write(10, PinValue.High);
+                            Thread.Sleep(200);
+                            controller.Write(10, PinValue.Low);
+                            Thread.Sleep(200);
+                        }
+                    }
+                } catch (HttpRequestException ex)
                 {
-                    //Allumer la led quand bouton Low
-                    controller.Write(10, PinValue.High);
-                    Thread.Sleep(1000);
-                    controller.Write(10, PinValue.Low);
-                }
-                else
-                {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                    Console.WriteLine(ex.Message);
                     for (int i = 0; i < 5; i++)
                     {
-                        controller.Write(10, PinValue.High);
+                        controller.Write(mySettings.outputPin, PinValue.High);
                         Thread.Sleep(200);
-                        controller.Write(10, PinValue.Low);
+                        controller.Write(mySettings.outputPin, PinValue.Low);
                         Thread.Sleep(200);
                     }
                 }
-            } catch (HttpRequestException ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                Console.WriteLine(ex.Message);
-                for (int i = 0; i < 5; i++)
-                {
-                    controller.Write(mySettings.outputPin, PinValue.High);
-                    Thread.Sleep(200);
-                    controller.Write(mySettings.outputPin, PinValue.Low);
-                    Thread.Sleep(200);
-                }
+
             }
 
-        }
+        } 
+        else
+        {
+            if (((heureNotif>0) && (heureNotif<mySettings.finNPD)) || (((heureNotif<0) && (heureNotif>mySettings.debutNPD))) {
+                try
+                {
+                    var response = await client.PostAsync(url, data);
+                    string result = response.Content.ReadAsStringAsync().Result;
 
+                    if (response.IsSuccessStatusCode)
+                    {
+                        //Allumer la led quand bouton Low
+                        controller.Write(10, PinValue.High);
+                        Thread.Sleep(1000);
+                        controller.Write(10, PinValue.Low);
+                    }
+                    else
+                    {
+                        for (int i = 0; i < 5; i++)
+                        {
+                            controller.Write(10, PinValue.High);
+                            Thread.Sleep(200);
+                            controller.Write(10, PinValue.Low);
+                            Thread.Sleep(200);
+                        }
+                    }
+                }
+                catch (HttpRequestException ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                    Console.WriteLine(ex.Message);
+                    for (int i = 0; i < 5; i++)
+                    {
+                        controller.Write(mySettings.outputPin, PinValue.High);
+                        Thread.Sleep(200);
+                        controller.Write(mySettings.outputPin, PinValue.Low);
+                        Thread.Sleep(200);
+                    }
+                }
+            }
+        }
     }
 
 
