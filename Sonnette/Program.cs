@@ -116,7 +116,7 @@ public class Sonnette
         } 
         else
         {
-            if (((heureNotif>0) && (heureNotif<mySettings.finNPD)) || (((heureNotif<0) && (heureNotif>mySettings.debutNPD))) {
+            if ((heureNotif < mySettings.debutNPD) && (heureNotif > mySettings.finNPD)) {
                 try
                 {
                     var response = await client.PostAsync(url, data);
